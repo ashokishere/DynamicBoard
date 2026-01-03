@@ -8,6 +8,9 @@ export enum SlideType {
   GOOGLE_DRIVE = 'GOOGLE_DRIVE'
 }
 
+export type TextLayout = 'SPLIT' | 'OVERLAY';
+export type TextAlignment = 'left' | 'center' | 'right';
+
 export interface Slide {
   id: string;
   type: SlideType;
@@ -15,19 +18,31 @@ export interface Slide {
     imageUrl?: string;
     text?: string;
     htmlUrl?: string;
-    folderFiles?: string[]; // Base64 or Blob URLs
+    folderFiles?: string[]; 
     driveFileId?: string;
   };
-  duration: number; // in seconds
-  backgroundColor?: string; // Per-slide background color override
+  duration: number;
+  backgroundColor?: string;
+  
+  // Advanced Typography & Layout
+  fontSize?: number; 
+  fontFamily?: 'sans' | 'serif' | 'mono' | 'display' | 'montserrat' | 'playfair' | 'bebas' | 'lora';
+  isItalic?: boolean;
+  isBold?: boolean;
+  textColor?: string;
+  highlightColor?: string;
+  textLayout?: TextLayout;
+  textAlignment?: TextAlignment;
 }
 
 export interface GlobalSettings {
   headerText: string;
   footerText: string;
-  backgroundColor: string; // Default background color
+  backgroundColor: string;
   headerImage?: string;
   footerImage?: string;
+  defaultTextColor?: string;
+  defaultHighlightColor?: string;
 }
 
 export interface SignageConfig {
