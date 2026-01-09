@@ -1,4 +1,3 @@
-
 name: Deploy to GitHub Pages
 
 on:
@@ -16,20 +15,43 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  security-scan:
+    name: Shai-Hulud Supply Chain Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install scan dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bash coreutils findutils grep
+
+      - name: Run Shai-Hulud Detector
+        run: |
+          git clone https://github.com/Cobenian/shai-hulud-detect.git
+          chmod +x shai-hulud-detect/shai-hulud-detector.sh
+          shai-hulud-detect/shai-hulud-detector.sh .
+
+  build:
+    runs-on: ubuntu-latest
+    needs: security-scan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
       - name: Build
         run: npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
